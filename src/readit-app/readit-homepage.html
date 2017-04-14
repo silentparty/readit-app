@@ -12,7 +12,7 @@
 <dom-module id="readit-homepage">
     <template>
     
-        <style>
+        <style include="iron-flex">
             body {
               height: 100vh;
               margin: 0;
@@ -33,7 +33,7 @@
 
         <iron-ajax 
             id="ajax"
-            url="https://www.reddit.com/.json"
+            url="https://www.reddit.com/r/[[subreddit]].json"
             handle-as="json"
             params="[[_getParams(limit, after)]]"
             on-response="_handleResponse"
@@ -42,18 +42,19 @@
         ></iron-ajax>
 
         <app-header-layout id="layout" has-scrolling-region fullbleed>
-          <app-header fixed condenses effects="waterfall">
-            <app-toolbar>
-              <div main-title>Readit</div>
-            </app-toolbar>
-          </app-header>
 
-        <iron-scroll-threshold 
-            on-lower-threshold="_loadMore" 
-            scroll-target="[[target]]" 
-            id="threshold" 
-            lower-threshold="0">
-        </iron-scroll-threshold>
+            <app-header fixed condenses effects="waterfall">
+                <app-toolbar>
+                    <div main-title>Readit</div>
+                </app-toolbar>
+            </app-header>
+
+            <iron-scroll-threshold 
+                on-lower-threshold="_loadMore" 
+                scroll-target="[[target]]" 
+                id="threshold" 
+                lower-threshold="0">
+            </iron-scroll-threshold>
 
             <iron-list scroll-target="[[target]]" items="[[posts]]" as="post">
                 <template>
@@ -67,21 +68,20 @@
             <paper-spinner-lite active="[[loading]]"></paper-spinner-lite>
             <span>Fetching shit... 💩</span>
         </div>
+
     </template>
     
     <script>
     class ReaditHomepage extends Polymer.Element {
         static get is() { return "readit-homepage"; }
-        static get properties() {
+        static get properties() { 
             return {
+                subreddit: String,
                 limit: {
                     type: Number,
                     value: 10
                 },
-                after: {
-                    type: String,
-                    value: ''
-                },
+                after: String,
                 posts: {
                     type: Array,
                     value: () => {return []}
@@ -94,9 +94,11 @@
             console.log('attached')
             this._getScrollTarget()
         }
+
         _getScrollTarget () {
             this.target = this.shadowRoot.querySelector('#layout').shadowRoot.querySelector('#contentContainer')
         }
+
         _handleResponse (e, d) {
             // see this.push() in https://www.polymer-project.org/1.0/docs/devguide/model-data
             d.response.data.children.forEach((post) => {
@@ -105,12 +107,14 @@
             this.after = d.response.data.after
             this.shadowRoot.querySelector('#threshold').clearTriggers()
         }
+
         _getParams (limit, after) {
             return {
                 limit: limit,
                 after: after
             }
         }
+
         _loadMore () {
           // load async stuff. e.g. XHR
           console.log('hello');

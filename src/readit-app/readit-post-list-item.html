@@ -21,7 +21,7 @@
                 /*display: block;*/
             }
             .post-detail {
-                flex: 7.5;
+                @apply --layout-flex;
                 margin-right: var(--spacing-sm)
             }
             .post-meta {
@@ -43,9 +43,9 @@
                 padding: 0.5em 0
             }
             .post-voting {
-                flex: 1;
                 @apply --layout-vertical;
-                @apply(--layout-center);
+                @apply --layout-center;
+                width: 2em;
             }
             iron-image {
                 margin-right: var(--spacing-sm);
@@ -53,7 +53,7 @@
         </style>
 
         <div class="item">
-            <dom-if if="[[_canHasThumbnail(post.data.thumbnail)]]">
+            <dom-if if="[[_isThisAURL(post.data.thumbnail)]]">
                 <template>
                     <div class="post-image">
                         <iron-image style="width:80px; height:80px;" sizing="cover" src="[[post.data.thumbnail]]"></iron-image>
@@ -66,7 +66,7 @@
                     <span class="post-meta-item">[[post.data.subreddit_name_prefixed]]</span>
                     <span class="post-meta-item">[[post.data.author]]</span>
                 </div>
-                <p class="post-meta-item">[[_fixYaDate(post.data.created)]]</p>
+                <p class="post-meta-item">[[_convertUnixTime(post.data.created)]]</p>
             </div>
             <div class="post-voting">
                 <iron-icon class="arrow-upvote" icon="icons:arrow-upward"></iron-icon>
@@ -91,17 +91,19 @@
             }
         }
         /**
-        * Fixes ya date.
+        * Converts Reddit's Unix timestamp to a human-readable format.
         */
-        _fixYaDate (timecode) {
+        _convertUnixTime (timecode) {
             let theDate = new Date(timecode * 1000)
             return theDate.toUTCString()
         }
         /**
-        * Check to see if thumbnail string is a URL
+        * Check to see if thumbnail string is a URL. 
+        * Reddit will occasionally return a string with 'self', 
+        * 'default' or some other junk in place of a URL.
         */
-        _canHasThumbnail(obj) {
-            var re = new RegExp("(http|https)://")
+        _isThisAURL(obj) {
+            let re = new RegExp("(http|https)://")
             if (re.test(obj)) {
                 return true
             }
