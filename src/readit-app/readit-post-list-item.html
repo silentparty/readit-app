@@ -22,11 +22,13 @@
             }
             .post-meta {
                 @apply --layout-horizontal;
-                font-size: 0.8em;
-                color: rgba(1, 1, 1, 0.6)
             }
             .post-meta span:not(:last-child) {
                 margin-right: 1em;
+            }
+            .post-meta-item {
+                font-size: 0.8em;
+                color: rgba(1, 1, 1, 0.6);
             }
             iron-image {
                 margin-right: 1em;
@@ -45,7 +47,7 @@
                     <span>[[post.data.author]]</span>
                 </div>
                 <p>[[_fixYaDate(post.data.created)]]</p>
-                <span>[[post.data.score]]</span>
+                <span class="post-meta-item">[[post.data.score]]</span>
                 <iron-icon icon="icons:arrow-downward"></iron-icon>
                 <iron-icon icon="icons:arrow-upward"></iron-icon>
             </div>
