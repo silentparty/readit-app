@@ -1,0 +1,114 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="readit-post-list-item.html">
+
+<dom-module id="readit-homepage">
+    <template>
+    
+        <style>
+            body {
+              height: 100vh;
+              margin: 0;
+              display: flex;
+              flex-direction: column;
+            }
+
+        </style>
+
+        <iron-ajax 
+            id="ajax"
+            url="https://www.reddit.com/.json"
+            handle-as="json"
+            params="[[_getParams(limit, after)]]"
+            on-response="_handleResponse"
+            debounce-duration="300"
+            loading="{{loading}}"
+        ></iron-ajax>
+
+        <app-header-layout id="layout" has-scrolling-region fullbleed>
+          <app-header fixed condenses effects="waterfall">
+            <app-toolbar>
+              <div main-title>Readit</div>
+            </app-toolbar>
+          </app-header>
+
+        <iron-scroll-threshold 
+            on-lower-threshold="_loadMore" 
+            scroll-target="[[target]]" 
+            id="threshold" 
+            lower-threshold="0">
+        </iron-scroll-threshold>
+
+            <iron-list scroll-target="[[target]]" items="[[posts]]" as="post">
+                <template>
+                    <readit-post-list-item post="[[post]]"></readit-post-list-item>
+                </template>
+            </iron-list>
+            <div class="loader" hidden$="[[!loading]]">
+                <paper-spinner-lite active="[[loading]]"></paper-spinner-lite>
+                <span>Fetching shit... 💩</span>
+            </div>
+            
+          
+        </app-header-layout>
+    </template>
+    
+    <script>
+    class ReaditHomepage extends Polymer.Element {
+        static get is() { return "readit-homepage"; }
+        static get properties() {
+            return {
+                limit: {
+                    type: Number,
+                    value: 10
+                },
+                after: {
+                    type: String,
+                    value: ''
+                },
+                posts: {
+                    type: Array,
+                    value: () => {return []}
+                }
+            }
+        }
+
+        connectedCallback () {
+            super.connectedCallback()
+            console.log('attached')
+            this._getScrollTarget()
+        }
+        _getScrollTarget () {
+            this.target = this.shadowRoot.querySelector('#layout').shadowRoot.querySelector('#contentContainer')
+        }
+        _handleResponse (e, d) {
+            // see this.push() in https://www.polymer-project.org/1.0/docs/devguide/model-data
+            d.response.data.children.forEach((post) => {
+                this.push('posts', post)
+            })
+            this.after = d.response.data.after
+            this.shadowRoot.querySelector('#threshold').clearTriggers()
+        }
+        _getParams (limit, after) {
+            return {
+                limit: limit,
+                after: after
+            }
+        }
+        _loadMore () {
+          // load async stuff. e.g. XHR
+          console.log('hello');
+          this.shadowRoot.querySelector('#ajax').generateRequest()
+        }
+    }
+    customElements.define(ReaditHomepage.is, ReaditHomepage)
+    </script>
+    
+</dom-module>

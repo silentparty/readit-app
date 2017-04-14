@@ -1,0 +1,79 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/moment-element/moment-element.html">
+
+<dom-module id="readit-post-list-item">
+    <template>
+    
+        <style include="iron-flex">
+            :host {
+                display: block;
+                padding: 1rem;
+                border-top: 1px solid rgba(1, 1, 1, 0.1)
+            }
+            a {
+                text-decoration: none;
+            }
+            .item {
+                @apply --layout-horizontal;
+                /*display: block;*/
+            }
+            .post-meta {
+                @apply --layout-horizontal;
+                font-size: 0.8em;
+                color: rgba(1, 1, 1, 0.6)
+            }
+            .post-meta span:not(:last-child) {
+                margin-right: 1em;
+            }
+            iron-image {
+                margin-right: 1em;
+            }
+        </style>
+
+        <div class="item">
+            <div class="image">
+                <iron-image style="width:80px; height:80px;" sizing="cover" src="[[post.data.thumbnail]]"></iron-image>
+            </div>
+
+            <div>
+                <p><a href="[[post.data.name]]">[[post.data.title]]</a></p>
+                <div class="post-meta">
+                    <span>[[post.data.subreddit_name_prefixed]]</span>
+                    <span>[[post.data.author]]</span>
+                </div>
+                <p>[[_fixYaDate(post.data.created)]]</p>
+                <span>[[post.data.score]]</span>
+                <iron-icon icon="icons:arrow-downward"></iron-icon>
+                <iron-icon icon="icons:arrow-upward"></iron-icon>
+            </div>
+        </div>
+
+    </template>
+    
+    <script>
+    class ReaditPostListItem extends Polymer.Element {
+        static get is() { return "readit-post-list-item"; }
+        static get properties () {
+            return {
+                post: {
+                    type: Object,
+                    value: () => { return {} }
+                }
+            }
+        }
+        /**
+        * Fixes ya date.
+        */
+        _fixYaDate (timecode) {
+            let theDate = new Date(timecode * 1000)
+            return theDate.toUTCString()
+        }
+
+    }
+    customElements.define(ReaditPostListItem.is, ReaditPostListItem)
+    </script>
+    
+</dom-module>

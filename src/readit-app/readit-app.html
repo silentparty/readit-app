@@ -1,0 +1,47 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="readit-homepage.html">
+
+<dom-module id="readit-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <title>Readit App</title>
+    <app-location route="{{route}}"></app-location>
+    <app-route
+        route="{{route}}"
+        pattern="/:view"
+        data="{{routeData}}"></app-route>
+
+
+    <iron-pages selected="0">
+        <readit-homepage></readit-homepage>
+    </iron-pages>
+
+
+  </template>
+
+  <script>
+    class MyApplication extends Polymer.Element {
+      static get is() { return 'readit-app'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'readit-app'
+          }
+        }
+      }
+    }
+
+    window.customElements.define(MyApplication.is, MyApplication);
+  </script>
+</dom-module>

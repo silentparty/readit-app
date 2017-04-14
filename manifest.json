@@ -1,0 +1,6 @@
+{
+  "name": "readit-app",
+  "short_name": "readit-app",
+  "start_url": "/",
+  "display": "standalone"
+}
