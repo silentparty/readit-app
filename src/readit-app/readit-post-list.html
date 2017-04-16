@@ -7,6 +7,7 @@
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
+
 <link rel="import" href="readit-post-list-item.html">
 
 <dom-module id="readit-post-list">
@@ -20,9 +21,9 @@
               flex-direction: column;
             }
             .loader {
-                height: 50px;
                 @apply --layout-horizontal;
                 @apply --layout-center-justified;
+                height: 50px;
                 border-top: 1px solid rgba(1, 1, 1, 0.1);
                 padding: var(--spacing-sm);
             }   
@@ -31,7 +32,7 @@
 
         <iron-ajax 
             id="ajax"
-            url="https://www.reddit.com/[[subreddit]].json"
+            url="https://www.reddit.com/[[subredditUrl]].json"
             handle-as="json"
             params="[[_getParams(limit, after)]]"
             on-response="_handleResponse"
@@ -64,6 +65,7 @@
         static get properties() { 
             return {
                 subreddit: String,
+                subredditUrl: String,
                 limit: {
                     type: Number,
                     value: 10
@@ -83,9 +85,16 @@
         }
 
         _subRedditChanged(subreddit) {
+            if (!subreddit) { return false }
+            if (subreddit !== 'home') {
+                this.subredditUrl = '/r/' + subreddit
+            } else {
+                this.subredditUrl = ''
+            }
             this.set('posts', [])
             this.after = ''
-            this.$.threshold.clearTriggers()
+            // this.$.threshold.clearTriggers()
+            this._loadMore();
         }
 
         _handleResponse (e, d) {

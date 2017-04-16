@@ -16,21 +16,24 @@
             id="ajax"
             url="https://www.reddit.com/subreddits/default.json"
             handle-as="json"
-            on-response="_handleResponse"
-            debounce-duration="300"
             loading="{{loading}}"
             last-response="{{subReddits}}"
         ></iron-ajax>
         
-            <template is="dom-repeat" items="{{subReddits.data.children}}">
-                <a href="[[item.data.url]]">[[item.data.display_name]]</a>
-            </template>
+        <template is="dom-repeat" items="{{subReddits.data.children}}">
+            <a href="[[item.data.url]]" on-tap="_itemTapped">[[item.data.display_name]]</a>
+        </template>
 
     </template>
     
     <script>
-    class ReaditSubredditList extends Polymer.Element {
+    class ReaditSubredditList extends Polymer.GestureEventListeners(Polymer.Element) {
         static get is() { return "readit-subreddit-list"; }
+    
+        _itemTapped() {
+            let menuEvent = new CustomEvent('readit-toggle-menu', {bubbles: true, composed: true})
+            this.dispatchEvent(menuEvent)
+        }
 
     }
     customElements.define(ReaditSubredditList.is, ReaditSubredditList)

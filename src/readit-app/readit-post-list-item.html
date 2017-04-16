@@ -9,7 +9,6 @@
     
         <style include="iron-flex shared-styles">
             :host {
-                display: block;
                 padding: 1rem;
                 border-top: 1px solid rgba(1, 1, 1, 0.1)
             }
@@ -59,7 +58,7 @@
             </dom-if>
 
             <div class="post-detail">
-                <h1 class="post-title"><a href="[[post.data.name]]">[[post.data.title]]</a></h1>
+                <h1 class="post-title"><a href="/post/[[post.data.id]]">[[post.data.title]]</a></h1>
                 <div class="post-meta">
                     <span class="post-meta-item">[[post.data.subreddit_name_prefixed]]</span>
                     <span class="post-meta-item">[[post.data.author]]</span>

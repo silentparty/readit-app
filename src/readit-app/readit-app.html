@@ -4,22 +4,28 @@
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel=“import” href=“../../bower_components/polymer/lib/mixins/gesture-event-listeners.html”>
 
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="readit-homepage.html">
-<link rel="import" href="readit-subreddit-list.html">
 <link rel="import" href="readit-subreddit.html">
+<link rel="import" href="readit-subreddit-list.html">
+<link rel="import" href="readit-post.html">
 
 <dom-module id="readit-app">
   <template>
-    <style>
+    <style include="shared-styles">
       :host {
         display: block;
       }
       #drawer-content {
           overflow: auto;
           height: 100vh;
+      }
+      .fuck {
+          display: block;
+          padding: var(--spacing-sm);
       }
     </style>
 
@@ -33,11 +39,14 @@
     <app-drawer-layout fullbleed on-readit-toggle-menu="_toggleMenu">
       <app-drawer id="drawer" slot="drawer">
           <div id="drawer-content">
+              <a href="/home" class="fuck">Home</a>
               <readit-subreddit-list></readit-subreddit-list>
           </div>
       </app-drawer>
-      <iron-pages selected="0">
-          <readit-homepage subreddit="[[selectedSubreddit]]"></readit-homepage>
+      <iron-pages selected="[[routeData.view]]" attr-for-selected="name" fallback-selection="home">
+          <readit-homepage name="home"></readit-homepage>
+          <readit-subreddit name="r" route="[[route]]"></readit-subreddit>
+          <readit-post name="post" route="[[route]]"></readit-post>
       </iron-pages>
     </app-drawer-layout>
 
@@ -49,14 +58,6 @@
       static get is() { return 'readit-app'; }
       static get properties() {
         return {
-          prop1: {
-            type: String,
-            value: 'readit-app'
-          },
-          selectedSubreddit: {
-            type: String,
-            value: 'all'
-          }
         }
       }
       _toggleMenu() {
