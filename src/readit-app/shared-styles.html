@@ -1,20 +1,34 @@
-<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
 
 <dom-module id="shared-styles">
     <template>
     
         <style>
-            
+            :host {
+              --base-font-size: 16px;
+              --base-font-weight: 400;
+              --small-font-size: calc(var(--base-font-size) * 0.875);
+              --base-line-height: 1.5em;
+              /*spacing variables*/
+              --spacing-sm: 1em;
+              --spacing-md: 2em;
+              --spacing-lg: 3em;
+              --content-width: 1200px;
+              --max-width-x-large: 1600px;
+              --max-width-large: 1200px;
+              --max-width-medium: 1000px;
+              --max-width-small: 600px;
+              --color-primary: #0066FF; 
+              --color-secondary: #66CC66;
+              --color-upvote: #F36D27;
+              --color-downvote: #0986D3;
+              --text-color: #333;
+            }
+            a {
+                text-decoration: none;
+            }
         </style>
 
     </template>
-    
-    <script>
-    class SharedStyles extends Polymer.Element {
-        static get is() { return "shared-styles"; }
-
-    }
-    customElements.define(SharedStyles.is, SharedStyles)
-    </script>
     
 </dom-module>

@@ -1,0 +1,116 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="readit-post-list-item.html">
+
+<dom-module id="readit-post-list">
+    <template>
+    
+        <style include="iron-flex shared-styles">
+            body {
+              height: 100vh;
+              margin: 0;
+              display: flex;
+              flex-direction: column;
+            }
+            .loader {
+                height: 50px;
+                @apply --layout-horizontal;
+                @apply --layout-center-justified;
+                border-top: 1px solid rgba(1, 1, 1, 0.1);
+                padding: var(--spacing-sm);
+            }   
+
+        </style>
+
+        <iron-ajax 
+            id="ajax"
+            url="https://www.reddit.com/[[subreddit]].json"
+            handle-as="json"
+            params="[[_getParams(limit, after)]]"
+            on-response="_handleResponse"
+            debounce-duration="300"
+            loading="{{loading}}"
+        ></iron-ajax>
+
+        <iron-scroll-threshold 
+            on-lower-threshold="_loadMore" 
+            scroll-target="[[target]]" 
+            id="threshold" 
+            lower-threshold="0">
+        </iron-scroll-threshold>
+
+        <iron-list scroll-target="[[target]]" items="[[posts]]" as="post">
+            <template>
+                <readit-post-list-item post="[[post]]"></readit-post-list-item>
+            </template>
+        </iron-list>
+
+        <div class="loader">
+            <paper-spinner-lite active="[[loading]]"></paper-spinner-lite>
+        </div>
+
+    </template>
+    
+    <script>
+    class ReaditPostList extends Polymer.Element {
+        static get is() { return "readit-post-list"; }
+        static get properties() { 
+            return {
+                subreddit: String,
+                limit: {
+                    type: Number,
+                    value: 10
+                },
+                after: String,
+                posts: {
+                    type: Array,
+                    value: () => {return []}
+                },
+                target: Object
+            }
+        }
+        static get observers() { 
+            return [
+                '_subRedditChanged(subreddit)'
+            ]
+        }
+
+        _subRedditChanged(subreddit) {
+            this.set('posts', [])
+            this.after = ''
+            this.$.threshold.clearTriggers()
+        }
+
+        _handleResponse (e, d) {
+            // see this.push() in https://www.polymer-project.org/1.0/docs/devguide/model-data
+            d.response.data.children.forEach((post) => {
+                this.push('posts', post)
+            })
+            this.after = d.response.data.after
+            this.$.threshold.clearTriggers()
+        }
+
+        _getParams (limit, after) {
+            return {
+                limit: limit,
+                after: after
+            }
+        }
+
+        _loadMore () {
+          // load async stuff. e.g. XHR
+          console.log('hello');
+          this.shadowRoot.querySelector('#ajax').generateRequest()
+        }
+    }
+    customElements.define(ReaditPostList.is, ReaditPostList)
+    </script>
+    
+</dom-module>

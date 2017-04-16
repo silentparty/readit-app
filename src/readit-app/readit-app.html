@@ -3,14 +3,23 @@
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel=“import” href=“../../bower_components/polymer/lib/mixins/gesture-event-listeners.html”>
 
+<link rel="import" href="shared-styles.html">
 <link rel="import" href="readit-homepage.html">
+<link rel="import" href="readit-subreddit-list.html">
+<link rel="import" href="readit-subreddit.html">
 
 <dom-module id="readit-app">
   <template>
     <style>
       :host {
         display: block;
+      }
+      #drawer-content {
+          overflow: auto;
+          height: 100vh;
       }
     </style>
 
@@ -21,10 +30,16 @@
         pattern="/:view"
         data="{{routeData}}"></app-route>
 
-
-    <iron-pages selected="0">
-        <readit-homepage subreddit="[[selectedSubreddit]]"></readit-homepage>
-    </iron-pages>
+    <app-drawer-layout fullbleed on-readit-toggle-menu="_toggleMenu">
+      <app-drawer id="drawer" slot="drawer">
+          <div id="drawer-content">
+              <readit-subreddit-list></readit-subreddit-list>
+          </div>
+      </app-drawer>
+      <iron-pages selected="0">
+          <readit-homepage subreddit="[[selectedSubreddit]]"></readit-homepage>
+      </iron-pages>
+    </app-drawer-layout>
 
 
   </template>
@@ -43,6 +58,9 @@
             value: 'all'
           }
         }
+      }
+      _toggleMenu() {
+        this.$.drawer.toggle()
       }
     }
 

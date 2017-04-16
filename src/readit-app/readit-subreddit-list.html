@@ -1,0 +1,39 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="readit-subreddit-list">
+    <template>
+    
+        <style include="shared-styles">
+            a {
+                display: block;
+                padding: var(--spacing-sm);
+            }
+        </style>
+
+        <iron-ajax 
+            auto
+            id="ajax"
+            url="https://www.reddit.com/subreddits/default.json"
+            handle-as="json"
+            on-response="_handleResponse"
+            debounce-duration="300"
+            loading="{{loading}}"
+            last-response="{{subReddits}}"
+        ></iron-ajax>
+        
+            <template is="dom-repeat" items="{{subReddits.data.children}}">
+                <a href="[[item.data.url]]">[[item.data.display_name]]</a>
+            </template>
+
+    </template>
+    
+    <script>
+    class ReaditSubredditList extends Polymer.Element {
+        static get is() { return "readit-subreddit-list"; }
+
+    }
+    customElements.define(ReaditSubredditList.is, ReaditSubredditList)
+    </script>
+    
+</dom-module>
