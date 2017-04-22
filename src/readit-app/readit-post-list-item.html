@@ -6,7 +6,11 @@
 
 <dom-module id="readit-post-list-item">
     <template>
-    
+    <!--
+        TODO: Refactor readit-post-list item to handle either user's comments 
+        (same format as list except title is comment body) or user submitted / upvoted, etc
+        Add dom-if if="[[_check-for-post-type-or-user-type]]"
+    -->
         <style include="iron-flex shared-styles">
             :host {
                 padding: 1rem;

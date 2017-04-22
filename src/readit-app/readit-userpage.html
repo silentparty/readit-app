@@ -1,0 +1,81 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<link rel="import" href="readit-homepage.html">
+
+<dom-module id="readit-userpage">
+    <template>
+    
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+        </style>
+
+        <!--
+            TODO: Re-create this page by cloning readit-subreddit.
+            May just be able to flip out /r for /u
+
+            TODO: Render out user profile data using endpoint 
+            https://www.reddit.com/user/[[user]]/about.json
+
+            TODO: Render out user submissions using endpoint 
+            https://www.reddit.com/user/[[user]]/submitted.json
+
+            TODO: Render out user comments using endpoint 
+            https://www.reddit.com/user/[[user]]/comments.json
+        -->
+
+        <iron-ajax 
+            auto
+            id="ajax"
+            url="https://www.reddit.com/user/[[routeData.user]].json"
+            handle-as="json"
+            last-response="{{selectedUserFeed}}"
+            loading="{{loading}}"
+        ></iron-ajax>
+        
+        <iron-ajax 
+            auto
+            id="ajax"
+            url="https://www.reddit.com/user/[[routeData.user]]/about.json"
+            handle-as="json"
+            last-response="{{userData}}"
+            loading="{{loading}}"
+        ></iron-ajax>
+
+        <app-route
+            route="{{route}}"
+            pattern="/u/:user"
+            data="{{routeData}}"
+        ></app-route>
+        
+        <app-header-layout id="layout" has-scrolling-region fullbleed>
+          <app-header slot="header" condenses reveals id="header">
+            <app-toolbar>
+            <paper-icon-button icon="menu" on-tap="_openMenu"></paper-icon-button>
+              <div main-title>u/[[userData.data.name]]</div>
+            </app-toolbar>
+          </app-header>
+
+          <readit-post-list subreddit="[[selectedUserFeed.subreddit]]" target="[[target]]"></readit-post-list>
+
+        </app-header-layout>
+
+
+    </template>
+    
+    <script>
+    class ReaditUserpage extends ReaditHomepage {
+        static get is() { return "readit-userpage"; }
+    }
+    window.customElements.define(ReaditUserpage.is, ReaditUserpage)
+    </script>
+    
+</dom-module>

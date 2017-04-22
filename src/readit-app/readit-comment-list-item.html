@@ -1,0 +1,75 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<dom-module id="readit-comment-list-item">
+    <template>
+    
+        <style include="iron-flex shared-styles">
+            :host {
+                display: block;
+                padding-top: 0.5rem;
+                padding-bottom: 1rem;
+            }
+            :host(.primary){
+                padding: 1rem;
+                border-top: 1px solid rgba(1, 1, 1, 0.1)
+            }
+            .replies{
+                padding-left: 1rem;
+            }
+            .small{
+                font-size: 12px;
+            }
+            .control-strip{
+                @apply --layout-horizontal;
+            }
+            .expand-arrow[opened]{
+                transform: rotateX(0deg) rotateY(0deg) rotateZ(90deg);
+            }
+            .score {
+                color: cadetblue;
+            }
+        </style>
+        <div class="item">
+            <div class="control-strip">
+                <paper-icon-button icon="chevron-right" on-tap="_toggleReplies" class="expand-arrow" opened$="[[showReplies]]"></paper-icon-button>
+                <p class="small">[[comment.data.author]] • <span class="score">[[comment.data.score]]</span></p>
+            </div>
+            
+            <iron-collapse opened="[[showReplies]]">
+                <p>[[comment.data.body]]</p>
+                <div class="replies">
+                    <dom-repeat items="[[comment.data.replies.data.children]]" as="comment" item="comment">
+                <template>
+                  <readit-comment-list-item comment="[[comment]]"></readit-comment-list-item>
+                </template>
+              </dom-repeat>
+            </div>
+          </iron-collapse>
+        </div> 
+    </template>
+    
+    <script>
+    class ReaditCommentListItem extends Polymer.Element {
+        static get is() { return "readit-comment-list-item"; }
+        static get properties () {
+            return {
+                comment: {
+                    type: Object,
+                    value: () => { return {} }
+                },
+                showReplies:{
+                    type: Boolean,
+                    value: true
+                }
+            }
+        }
+        _toggleReplies(){
+            // This is how a toggle works folks.
+            this.showReplies = !this.showReplies;
+        }
+    }
+    window.customElements.define(ReaditCommentListItem.is, ReaditCommentListItem)
+    </script>
+    
+</dom-module>

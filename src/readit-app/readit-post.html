@@ -10,6 +10,8 @@
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="../../bower_components/marked-element/marked-element.html">
 
+<link rel="import" href="readit-comment-list-item.html">
+
 <dom-module id="readit-post">
     <template>
     
@@ -48,7 +50,7 @@
             auto="[[active]]"
             url="https://www.reddit.com/comments/[[routeData.postId]]/.json"
             handle-as="json"
-            last-response="{{redditPostData}}"
+            last-response="{{post}}"
             loading="{{loading}}"
         ></iron-ajax>
 
@@ -56,25 +58,36 @@
           <app-header slot="header" condenses reveals id="header">
                 <app-toolbar>
                     <paper-icon-button icon="arrow-back" on-tap="_goBack"></paper-icon-button>
-                    <div main-title>[[redditPostData.0.data.children.0.data.title]]</div>
+                    <div main-title>[[post.0.data.children.0.data.title]]</div>
                 </app-toolbar>
             </app-header>
 
             <div class="post-content">
-                <p>u/[[redditPostData.0.data.children.0.data.author]]</p>
+                <p>u/[[post.0.data.children.0.data.author]]</p>
                 
                 <div class="selftext">
-                    <marked-element markdown="[[redditPostData.0.data.children.0.data.selftext]]"></marked-element>
+                    <marked-element markdown="[[post.0.data.children.0.data.selftext]]"></marked-element>
                 </div>
                 
-                <dom-repeat items="[[redditPostData.0.data.children.0.data.preview.images]]" as="image">
+                <dom-repeat items="[[post.0.data.children.0.data.preview.images]]" as="image">
                     <template>
                         <div class="image">
                             <iron-image sizing="contain" preload fade src="[[image.source.url]]"></iron-image>
                         </div>
                     </template>
                 </dom-repeat>
+
+                <div class="comments">
+                    <p>[[post.0.data.children.0.data.num_comments]] comments</p>
+                    <dom-repeat items="[[post.1.data.children]]">
+                        <template>
+                            <readit-comment-list-item comment="[[item]]" class="primary"></readit-comment-list-item>
+                        </template>
+                    </dom-repeat>
+                </div>
+
             </div>
+
             
             <div hidden$="[[!loading]]" class="overlay">
                 <div class="loader">
