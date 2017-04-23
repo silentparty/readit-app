@@ -61,7 +61,9 @@
     
     <script>
     class ReaditPostList extends Polymer.Element {
+
         static get is() { return "readit-post-list"; }
+
         static get properties() { 
             return {
                 subreddit: String,
@@ -78,16 +80,18 @@
                 target: Object
             }
         }
+
         static get observers() { 
             return [
                 '_subRedditChanged(subreddit)'
             ]
         }
 
+        // TODO: add a case for switching to /u/
         _subRedditChanged(subreddit) {
             if (!subreddit) { return false }
             if (subreddit !== 'home') {
-                this.subredditUrl = '/r/' + subreddit
+                this.subredditUrl = 'r/' + subreddit
             } else {
                 this.subredditUrl = ''
             }

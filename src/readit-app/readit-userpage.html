@@ -6,6 +6,7 @@
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 
 <link rel="import" href="readit-homepage.html">
 
@@ -17,30 +18,8 @@
                 display: block;
             }
         </style>
-
-        <!--
-            TODO: Re-create this page by cloning readit-subreddit.
-            May just be able to flip out /r for /u
-
-            TODO: Render out user profile data using endpoint 
-            https://www.reddit.com/user/[[user]]/about.json
-
-            TODO: Render out user submissions using endpoint 
-            https://www.reddit.com/user/[[user]]/submitted.json
-
-            TODO: Render out user comments using endpoint 
-            https://www.reddit.com/user/[[user]]/comments.json
-        -->
-
-        <iron-ajax 
-            auto
-            id="ajax"
-            url="https://www.reddit.com/user/[[routeData.user]].json"
-            handle-as="json"
-            last-response="{{selectedUserFeed}}"
-            loading="{{loading}}"
-        ></iron-ajax>
         
+        <!-- About user section -->
         <iron-ajax 
             auto
             id="ajax"
@@ -59,12 +38,17 @@
         <app-header-layout id="layout" has-scrolling-region fullbleed>
           <app-header slot="header" condenses reveals id="header">
             <app-toolbar>
-            <paper-icon-button icon="menu" on-tap="_openMenu"></paper-icon-button>
-              <div main-title>u/[[userData.data.name]]</div>
+                <paper-icon-button icon="menu" on-tap="_openMenu"></paper-icon-button>
+                <div main-title>u/[[userData.data.name]]</div>
             </app-toolbar>
+            <paper-tabs selected="{{selected}}" attr-for-selected="name">
+                <paper-tab name="submitted">Submitted</paper-tab>
+                <paper-tab name="comments">Comments</paper-tab>
+            </paper-tabs>
           </app-header>
 
-          <readit-post-list subreddit="[[selectedUserFeed.subreddit]]" target="[[target]]"></readit-post-list>
+
+          <readit-post-list subreddit="[[routeData.user]]/[[selected]]" target="[[target]]"></readit-post-list>
 
         </app-header-layout>
 
@@ -74,6 +58,18 @@
     <script>
     class ReaditUserpage extends ReaditHomepage {
         static get is() { return "readit-userpage"; }
+        static get properties() {
+            return {
+                /**
+                * Default tab selection
+                */
+                selected: {
+                    type: String,
+                    value: 'submitted'
+                }
+                
+            }
+        }
     }
     window.customElements.define(ReaditUserpage.is, ReaditUserpage)
     </script>
