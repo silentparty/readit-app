@@ -39,7 +39,7 @@
           <app-header slot="header" condenses reveals id="header">
             <app-toolbar>
                 <paper-icon-button icon="menu" on-tap="_openMenu"></paper-icon-button>
-                <div main-title>u/[[userData.data.name]]</div>
+                <div main-title>u/[[userData.data.name]] • <span class="small">[[userData.data.comment_karma]] karma</span></div>
             </app-toolbar>
             <paper-tabs selected="{{selected}}" attr-for-selected="name">
                 <paper-tab name="submitted">Submitted</paper-tab>
