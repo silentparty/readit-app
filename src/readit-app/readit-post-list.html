@@ -91,7 +91,7 @@
         _subRedditChanged(subreddit) {
             if (!subreddit) { return false }
             if (subreddit !== 'home') {
-                this.subredditUrl = 'r/' + subreddit
+                this.subredditUrl = subreddit
             } else {
                 this.subredditUrl = ''
             }
